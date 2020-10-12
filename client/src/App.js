@@ -9,7 +9,7 @@ import SavedList from './Movies/SavedList';
 export default function App () {
   const [saved, setSaved] = useState([]); // Stretch: the ids of "saved" movies
   const [movieList, setMovieList] = useState([]);
-
+  
   useEffect(() => {
     const getMovies = () => {
       axios
@@ -28,15 +28,24 @@ export default function App () {
 
   const addToSavedList = id => {
     // This is stretch. Prevent the same movie from being "saved" more than once
+    let inList = false;
+    saved.map(movie => {
+      if(movie.id == id){
+        inList = true;
+      }
+    })
+    if(inList === false){
+    setSaved(saved => [...saved, movieList[id]])
+    }
   };
   
   if(!movieList) return <h2>Loading...</h2>
   return (
     <div>
-      <SavedList list={[ /* This is stretch */]} />
+      <SavedList list={saved} />
       <Switch>
       <Route path='/movies/:itemID'>
-        <Movie />
+        <Movie addToSavedList={addToSavedList}/>
       </Route>
       <Route path='/'>
         <MovieList movies={movieList}/>
